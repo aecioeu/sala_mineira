@@ -39,7 +39,7 @@ const processUpsert = async (webhookData) => {
     let conversation = "";
     let mediaDetails = [];
 
-    if (messageType === "textMessage") {
+    if (messageType === "conversation") {
       conversation = message.conversation;
     } else if (["imageMessage", "audioMessage", "documentMessage", "videoMessage"].includes(messageType)) {
      // console.log(`${messageType}:`, message[messageType]);
