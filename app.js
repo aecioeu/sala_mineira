@@ -1,5 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
+import pdfkit from "pdfkit";
+import { Readable } from "stream";
 
 const app = express();
 
@@ -118,6 +120,34 @@ app.post("/webhook", async (req, res) => {
 app.get("/", (req, res) => {
     res.json({ status: "success", message: "API está rodando corretamente!" });
   });
+
+
+
+  app.get("/emitir-das", (req, res) => {
+    // Criando um PDF em memória
+    const doc = new pdfkit();
+    let buffers = [];
+
+    doc.on("data", buffers.push.bind(buffers));
+    doc.on("end", () => {
+        const pdfData = Buffer.concat(buffers).toString("base64");
+        
+        res.json({
+            status: "success",
+            cnpj: "02725874000132",
+            mes_referencia: "2025-02",
+            pdf_base64: pdfData
+        });
+    });
+
+    // Adicionando um conteúdo básico ao PDF
+    doc.text("DAS - Documento de Arrecadação do Simples Nacional", {
+        align: "center"
+    });
+    doc.text("\nCNPJ: 02725874000132");
+    doc.text("Mês de Referência: 2025-02");
+    doc.end();
+});
 
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
