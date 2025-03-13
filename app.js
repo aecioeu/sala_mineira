@@ -123,7 +123,15 @@ app.get("/", (req, res) => {
 
 
 
-  app.get("/emitir-das", (req, res) => {
+
+
+  
+  app.post("/emitir-das", (req, res) => {
+
+    console.log("Recebido pedido de geração de DAS" req.body);
+
+
+
     // Criando um PDF em memória
     const doc = new pdfkit();
     let buffers = [];
@@ -139,6 +147,8 @@ app.get("/", (req, res) => {
             pdf_base64: pdfData
         });
     });
+
+
 
     // Adicionando um conteúdo básico ao PDF
     doc.text("DAS - Documento de Arrecadação do Simples Nacional", {
