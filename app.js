@@ -128,7 +128,7 @@ app.get("/", (req, res) => {
   
   app.post("/emitir-das", (req, res) => {
 
-    console.log("Recebido pedido de geração de DAS", req.body);
+    console.log("Recebido pedido de geração de DAS", req);
 
 
 
