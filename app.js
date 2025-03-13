@@ -125,39 +125,43 @@ app.get("/", (req, res) => {
 
 
 
-  
   app.post("/emitir-das", (req, res) => {
+    try {
+        console.log("Recebido pedido de geração de DAS", req.body);
+        const { cnpj, mes, ano } = req.body;
 
-    console.log("Recebido pedido de geração de DAS", req);
+        // Criando um PDF em memória
+        const doc = new pdfkit();
+        let buffers = [];
 
-
-
-    // Criando um PDF em memória
-    const doc = new pdfkit();
-    let buffers = [];
-
-    doc.on("data", buffers.push.bind(buffers));
-    doc.on("end", () => {
-        const pdfData = Buffer.concat(buffers).toString("base64");
-        
-        res.json({
-            status: "success",
-            cnpj: "02725874000132",
-            mes_referencia: "2025-02",
-            pdf_base64: pdfData
+        doc.on("data", (chunk) => buffers.push(chunk));
+        doc.on("end", () => {
+            try {
+                const pdfData = Buffer.concat(buffers).toString("base64");
+                res.json({
+                    status: "success",
+                    cnpj,
+                    mes,
+                    ano,
+                    pdf_base64: pdfData
+                });
+            } catch (error) {
+                console.error("Erro ao processar PDF:", error);
+                res.status(500).json({ status: "error", message: "Erro ao processar o PDF" });
+            }
         });
-    });
 
-
-
-    // Adicionando um conteúdo básico ao PDF
-    doc.text("DAS - Documento de Arrecadação do Simples Nacional", {
-        align: "center"
-    });
-    doc.text("\nCNPJ: 02725874000132");
-    doc.text("Mês de Referência: 2025-02");
-    doc.end();
+        // Adicionando um conteúdo básico ao PDF
+        doc.text("DAS - Documento de Arrecadação do Simples Nacional", { align: "center" });
+        doc.text(`\nCNPJ: ${cnpj}`);
+        doc.text(`Mês de Referência: ${mes}-${ano}`);
+        doc.end();
+    } catch (error) {
+        console.error("Erro ao gerar DAS:", error);
+        res.status(500).json({ status: "error", message: "Erro ao gerar o DAS" });
+    }
 });
+
 
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
@@ -166,4 +170,4 @@ app.listen(PORT, () => {
 });
 
 
-console.log(processUpsert({"event": "messages.upsert", "instance": "aecio", "data": {"key": {"remoteJid": "553799564996@s.whatsapp.net", "fromMe": true, "id": "3EB02313173A5079614EAA"}, "pushName": "Aecio Oliveira", "status": "SERVER_ACK", "message": {"conversation": "opa tudo bem ?"}, "contextInfo": {"expiration": 604800, "ephemeralSettingTimestamp": "1730203049", "disappearingMode": {"initiator": "CHANGED_IN_CHAT", "trigger": "ACCOUNT_SETTING", "initiatedByMe": true}}, "messageType": "conversation", "messageTimestamp": 1741001371, "instanceId": "22098a5e-e694-4772-a679-aa99746440d7", "source": "web"}, "destination": "https://automation.pmlp.com.br/webhook-test/cf6b0b8d-017a-47f1-95da-9a28480bc715", "date_time": "2025-03-03T08:29:31.505Z", "sender": "553788555554@s.whatsapp.net", "server_url": "https://evolution.pmlp.com.br", "apikey": "BCD3009F38AE-491E-AD1B-D44AAB51C922"}));
+//console.log(processUpsert({"event": "messages.upsert", "instance": "aecio", "data": {"key": {"remoteJid": "553799564996@s.whatsapp.net", "fromMe": true, "id": "3EB02313173A5079614EAA"}, "pushName": "Aecio Oliveira", "status": "SERVER_ACK", "message": {"conversation": "opa tudo bem ?"}, "contextInfo": {"expiration": 604800, "ephemeralSettingTimestamp": "1730203049", "disappearingMode": {"initiator": "CHANGED_IN_CHAT", "trigger": "ACCOUNT_SETTING", "initiatedByMe": true}}, "messageType": "conversation", "messageTimestamp": 1741001371, "instanceId": "22098a5e-e694-4772-a679-aa99746440d7", "source": "web"}, "destination": "https://automation.pmlp.com.br/webhook-test/cf6b0b8d-017a-47f1-95da-9a28480bc715", "date_time": "2025-03-03T08:29:31.505Z", "sender": "553788555554@s.whatsapp.net", "server_url": "https://evolution.pmlp.com.br", "apikey": "BCD3009F38AE-491E-AD1B-D44AAB51C922"}));
