@@ -134,6 +134,9 @@ app.post("/emitir-das", async (req, res) => {
 
     // 🔹 Extração de parâmetros (poderiam vir do `req.body`)
     const { cnpj, mes, ano, from, instance } = req.body;
+
+    console.log("🔹 Extração de parâmetros (poderiam vir do `req.body`)", { cnpj, mes, ano, from, instance });
+
     // para fins de teste
    /* const from = "5537988555554",
       instance = "aecio",
@@ -157,6 +160,7 @@ app.post("/emitir-das", async (req, res) => {
     // 🔹 Enviar mensagem com o arquivo para o destinatário
     const message = await enviarDAS(from, instance, infoDAS);
 
+
     if (message?.success) {
       return res.json({
         status: "success",
@@ -165,7 +169,7 @@ app.post("/emitir-das", async (req, res) => {
     }
 
     // 🔹 Se chegou aqui, houve falha no envio da mensagem
-    throw new Error("Falha ao enviar o DAS via mensagem");
+    throw new Error("Falha ao enviar o DAS via mensagem", message);
 
   } catch (error) {
     console.error("Erro ao processar DAS:", error);
