@@ -164,7 +164,7 @@ app.post("/emitir-das", async (req, res) => {
     if (message?.success) {
       return res.json({
         status: "success",
-        message: `DAS do mês ${mes}/${ano} gerado e enviado com sucesso.`,
+        message: `DAS do mês ${mes}/${ano} gerado com sucesso.`,
       });
     }
 
