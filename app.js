@@ -129,17 +129,17 @@ app.get("/", (req, res) => {
 });
 
 
-app.get("/emitir-das", async (req, res) => {
+app.post("/emitir-das", async (req, res) => {
   try {
 
     // 🔹 Extração de parâmetros (poderiam vir do `req.body`)
-    //const { cnpj, mes, ano, from, instance } = req.body;
+    const { cnpj, mes, ano, from, instance } = req.body;
     // para fins de teste
-    const from = "5537988555554",
+   /* const from = "5537988555554",
       instance = "aecio",
       cnpj = "02725874000130",
       mes = "01",
-      ano = "2023";
+      ano = "2023";*/
 
 
 
