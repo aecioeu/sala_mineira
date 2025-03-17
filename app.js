@@ -1,7 +1,14 @@
 import express from "express";
 import bodyParser from "body-parser";
-import pdfkit from "pdfkit";
-import { Readable } from "stream";
+
+import qs from "qs"
+import axios from "axios";
+import https from "https";
+import fs from "fs";
+import { emissaoDAS, emissaoDAS_test } from "./utils/serpro.js";
+import { sendMsg } from "./utils/whatsapp.js";
+import { validate } from 'node-cnpj';
+
 
 const app = express();
 
@@ -119,48 +126,92 @@ app.post("/webhook", async (req, res) => {
 
 app.get("/", (req, res) => {
     res.json({ status: "success", message: "API está rodando corretamente!" });
-  });
-
-
-
-
-
-  app.post("/emitir-das", (req, res) => {
-    try {
-        console.log("Recebido pedido de geração de DAS", req.body);
-        const { cnpj, mes, ano } = req.body;
-
-        // Criando um PDF em memória
-        const doc = new pdfkit();
-        let buffers = [];
-
-        doc.on("data", (chunk) => buffers.push(chunk));
-        doc.on("end", () => {
-            try {
-                const pdfData = Buffer.concat(buffers).toString("base64");
-                res.json({
-                    status: "success",
-                    cnpj,
-                    mes,
-                    ano,
-                    pdf_base64: pdfData
-                });
-            } catch (error) {
-                console.error("Erro ao processar PDF:", error);
-                res.status(500).json({ status: "error", message: "Erro ao processar o PDF" });
-            }
-        });
-
-        // Adicionando um conteúdo básico ao PDF
-        doc.text("DAS - Documento de Arrecadação do Simples Nacional", { align: "center" });
-        doc.text(`\nCNPJ: ${cnpj}`);
-        doc.text(`Mês de Referência: ${mes}-${ano}`);
-        doc.end();
-    } catch (error) {
-        console.error("Erro ao gerar DAS:", error);
-        res.status(500).json({ status: "error", message: "Erro ao gerar o DAS" });
-    }
 });
+
+
+app.get("/emitir-das", async (req, res) => {
+  try {
+
+    // 🔹 Extração de parâmetros (poderiam vir do `req.body`)
+    //const { cnpj, mes, ano, from, instance } = req.body;
+    // para fins de teste
+    const from = "5537988555554",
+      instance = "aecio",
+      cnpj = "02725874000130",
+      mes = "01",
+      ano = "2023";
+
+
+
+    // 🔹 Validação dos parâmetros
+    if (!validate(cnpj)) {
+      return res.status(400).json({ status: "error", message: "CNPJ invalido, peça que insira novamente o CNPJ." });
+    }
+
+    // 🔹 Gera o DAS
+    const infoDAS = await gerarDAS(cnpj, mes, ano);
+    if (!infoDAS) {
+      return res.status(500).json({ status: "error", message: "Falha ao obter o DAS" });
+    }
+
+    // 🔹 Enviar mensagem com o arquivo para o destinatário
+    const message = await enviarDAS(from, instance, infoDAS);
+
+    if (message?.success) {
+      return res.json({
+        status: "success",
+        message: `DAS gerado e enviado com sucesso para o CNPJ ${cnpj} no mês ${mes} de ${ano}`,
+      });
+    }
+
+    // 🔹 Se chegou aqui, houve falha no envio da mensagem
+    throw new Error("Falha ao enviar o DAS via mensagem");
+
+  } catch (error) {
+    console.error("Erro ao processar DAS:", error);
+    res.status(500).json({ status: "error", message: error.message || "Erro ao processar o DAS, peça para o usuario tentar novamente mais tarde, houve algum problema." });
+  }
+});
+
+// 🔹 Função para gerar DAS
+async function gerarDAS(cnpj, mes, ano) {
+  try {
+    const response = await emissaoDAS_test(cnpj, mes, ano);
+    const [dadosItem] = JSON.parse(response.dados); // Pega o primeiro item diretamente
+
+    if (!dadosItem || !dadosItem.pdf) {
+      throw new Error("DAS não retornou um PDF válido");
+    }
+
+    const { cnpjCompleto, razaoSocial, pdf: pdfBase64 } = dadosItem;
+    return { cnpjCompleto, razaoSocial, pdfBase64, mes, ano };
+
+  } catch (error) {
+    console.error("Erro ao gerar DAS:", error);
+    return null;
+  }
+}
+
+// 🔹 Função para enviar DAS via mensagem
+async function enviarDAS(from, instance, { razaoSocial, mes, ano, pdfBase64 }) {
+  try {
+    return await sendMsg({
+      type: "document",
+      from,
+      instance,
+      media: {
+        type: "document",
+        base64: pdfBase64,
+        mimeType: "application/pdf",
+        fileName: `${razaoSocial}-${mes}-${ano}.pdf`,
+        caption: `DAS ${mes}/${ano}`,
+      },
+    });
+  } catch (error) {
+    console.error("Erro ao enviar mensagem:", error);
+    return null;
+  }
+}
 
 
 // Iniciar servidor
