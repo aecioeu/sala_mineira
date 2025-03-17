@@ -164,7 +164,7 @@ app.post("/emitir-das", async (req, res) => {
     if (message?.success) {
       return res.json({
         status: "success",
-        message: `DAS gerado e enviado com sucesso para o CNPJ ${cnpj} no mês ${mes} de ${ano}`,
+        message: `DAS do mês ${mes}/${ano} gerado e enviado com sucesso.`,
       });
     }
 
