@@ -65,7 +65,7 @@ const processUpsert = async (webhookData) => {
         console.log("BASE64", base64)
 
         const mediaData = message[messageType] || {};
-       // console.log("MEDIA DATA", mediaData)
+        console.log("MEDIA DATA", mediaData)
 
         const mediaInfo = {
           messageId: messageId,
