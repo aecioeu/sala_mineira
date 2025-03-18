@@ -107,7 +107,7 @@ try {
     headers,
     httpsAgent
   });
- // console.log(response.data);
+  console.log(response.data);
   return response.data;
 } catch (error) {
   console.error('Erro ao consultar o Extrato do DAS:', error.response ? error.response.data : error.message);
