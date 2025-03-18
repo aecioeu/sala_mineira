@@ -61,9 +61,7 @@ const sender = async (url, payload) => {
    
    // Função para enviar mensagens
   export const sendMsg = async (payload) => {
-
-    console.log("PEYLOAD", payload)
-     
+       
      try {
        //console.log("payload do sendMsg", payload);
        let messageData = null;
@@ -100,7 +98,7 @@ const sender = async (url, payload) => {
            return { success: false, error: "Tipo de mensagem não suportado" };
        }
    
-       //console.log("messageData", messageData);
+       console.log("messageData", apiUrl,  messageData);
    
      /*  if (messageData.success) {
          const {

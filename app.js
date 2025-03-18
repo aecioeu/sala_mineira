@@ -190,7 +190,6 @@ async function gerarDAS(cnpj, mes, ano) {
     const response = await emissaoDAS_test(cnpj, mes, ano);
     const [dadosItem] = JSON.parse(response.dados); // Pega o primeiro item diretamente
 
-
     const isPaid = response.mensagens?.some(msg => msg.codigo === '[Aviso-PGMEI-23018]');
 
     if (isPaid) {
