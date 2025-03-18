@@ -9,6 +9,23 @@ const buildApiUrl = (endpoint) => {
     return `${process.env.API_EVOLUTION_URL}/${endpoint}`;
   };
   
+export const getBase64FromMediaMessage = async (payload) => {
+    try {
+      const apiUrl = buildApiUrl("chat/getBase64FromMediaMessage");
+      const response = await axios.post(apiUrl, payload, axiosConfig);
+  
+      if (response.data.base64) {
+        console.log(`Base64 da mídia recebido com sucesso.`);
+        return response.data.base64;
+      } else {
+        console.log(`Base64 não encontrado para o payload informado.`);
+        return null;
+      }
+    } catch (error) {
+      console.error(`Erro ao buscar a mídia:`, error.response?.data || error.message);
+      return null;
+    }
+}; 
 
   // Função para configurar autenticação padrão
 const axiosConfig = {
@@ -51,7 +68,7 @@ const sender = async (url, payload) => {
    
        switch (payload.type) {
          case "text":
-           var apiUrl = buildApiUrl("message/sendText/instance");
+           var apiUrl = buildApiUrl(`message/sendText/${payload.instance}`);
            // Enviar mensagem de texto e aguardar retorno
            messageData = await sender(apiUrl, {
              number: payload.from,
@@ -59,8 +76,8 @@ const sender = async (url, payload) => {
              delay: 1200,
            });
            case "document":
-            console.log("payload do sendMsg", payload);
-            var apiUrl = buildApiUrl("message/sendMedia/aecio");
+           // console.log("payload do sendMsg", payload);
+            var apiUrl = buildApiUrl(`message/sendMedia/${payload.instance}`);
             // Enviar mensagem de texto e aguardar retorno
             messageData = await sender(apiUrl, {
               number: payload.from,

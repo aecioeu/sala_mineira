@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import { emissaoDAS, emissaoDAS_test } from "./utils/serpro.js";
-import { sendMsg } from "./utils/whatsapp.js";
+import { sendMsg, getBase64FromMediaMessage} from "./utils/whatsapp.js";
 import { validate } from 'node-cnpj';
 
 
@@ -9,6 +9,10 @@ const app = express();
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+
+
+
+
 
 
 // Função processUpsert
@@ -52,10 +56,10 @@ const processUpsert = async (webhookData) => {
      // console.log(`${messageType}:`, message[messageType]);
 
       try {
-       /* let base64 = await getBase64FromMediaMessage({
+        let base64 = await getBase64FromMediaMessage({
           message: { key: { id: messageId } },
           convertToMp4: messageType === "audioMessage" || messageType === "videoMessage"
-        });*/
+        });
 
         const mediaData = message[messageType] || {};
        // console.log("MEDIA DATA", mediaData)

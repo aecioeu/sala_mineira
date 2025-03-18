@@ -72,7 +72,6 @@ const headers = {
   'jwt_token': jwtToken
 };
 
-console.log("TOKENS OBTIDOS" ,accessToken, jwtToken)
 
 // 🔹 Formata mês e ano corretamente
 const mesFormatado = moment(mes, "M").format("MM"); // Garante 2 dígitos
@@ -99,7 +98,7 @@ const data = {
   }
 };
 
-  console.log("Data formatada", data)
+ 
   const httpsAgent = getHttpsAgent();
 
 try {
@@ -107,7 +106,7 @@ try {
     headers,
     httpsAgent
   });
-  console.log(response.data);
+  //console.log(response.data);
   return response.data;
 } catch (error) {
   console.error('Erro ao consultar o Extrato do DAS:', error.response ? error.response.data : error.message);
