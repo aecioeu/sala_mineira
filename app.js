@@ -62,10 +62,10 @@ const processUpsert = async (webhookData) => {
           convertToMp4: messageType === "audioMessage" || messageType === "videoMessage"
         });
 
-        console.log("BASE64", base64)
+        //console.log("BASE64", base64)
 
         const mediaData = message[messageType] || {};
-        console.log("MEDIA DATA", mediaData)
+        //console.log("MEDIA DATA", mediaData)
 
         const mediaInfo = {
           messageId: messageId,
@@ -84,7 +84,7 @@ const processUpsert = async (webhookData) => {
         };
 
         mediaDetails.push(mediaInfo);
-       console.log("mediaDetails:", mediaDetails);
+       //console.log("mediaDetails:", mediaDetails);
  
 
         conversation = message.caption;
@@ -153,11 +153,13 @@ app.post("/emitir-das", async (req, res) => {
     }
     // 🔹 Gera o DAS
     const infoDAS = await gerarDAS(cnpj, mes, ano);
+    console.log("Info do DaS GERADO " , infoDAS)
 
-    if(infoDAS.status == "success"){
+      if(infoDAS.status == "success"){
 
       // 🔹 Enviar mensagem com o arquivo para o destinatário
       const message = await enviarDAS(from, instance, infoDAS);
+      console.log(message)
 
       if (message?.success) {
         return res.json({

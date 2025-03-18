@@ -11,7 +11,7 @@ const buildApiUrl = (endpoint) => {
   
 export const getBase64FromMediaMessage = async (payload) => {
 
-  console.log("Payload recebido:", payload);
+  //console.log("Payload recebido:", payload);
     try {
       const apiUrl = buildApiUrl(`chat/getBase64FromMediaMessage/${payload.instance}`);
       const response = await axios.post(apiUrl, payload, axiosConfig);
