@@ -150,6 +150,10 @@ app.post("/emitir-das", async (req, res) => {
             ano = "2023";*/
 
     // 🔹 Validação dos parâmetros
+    if(cnpj == "0" || cnpj == 0 || !cnpj){
+      return res.status(200).json({ status: "error", message: "Infome o CNPJ." }); 
+    }
+    
     if (!validate(cnpj)) {
       return res.status(200).json({ status: "error", message: "CNPJ invalido, peça que insira novamente o CNPJ." });
     }
