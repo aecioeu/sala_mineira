@@ -149,7 +149,7 @@ app.post("/emitir-das", async (req, res) => {
 
     // 🔹 Validação dos parâmetros
     if (!validate(cnpj)) {
-      return res.status(400).json({ status: "error", message: "CNPJ invalido, peça que insira novamente o CNPJ." });
+      return res.status(200).json({ status: "error", message: "CNPJ invalido, peça que insira novamente o CNPJ." });
     }
     // 🔹 Gera o DAS
     const infoDAS = await gerarDAS(cnpj, mes, ano);
