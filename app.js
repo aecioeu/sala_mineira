@@ -159,6 +159,7 @@ app.post("/emitir-das", async (req, res) => {
 
       // 🔹 Enviar mensagem com o arquivo para o destinatário
       const message = await enviarDAS(from, instance, infoDAS);
+      console.log("RETORNO DO ENVIAR DAS", message);
      
 
       if (message?.success) {
