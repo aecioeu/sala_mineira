@@ -75,7 +75,7 @@ const processUpsert = async (webhookData) => {
                     messageType === "documentMessage" ? "application/pdf" :
                     messageType === "videoMessage" ? "video/mp4" : "image/jpeg",
           resolution: messageType === "imageMessage" || messageType === "videoMessage" ? `${mediaData?.width}x${mediaData?.height}` : null,
-          base64: message.base64 || null,
+          base64: base64 || null,
           title: mediaData.title || null,
           fileLength: mediaData.fileLength || null,
           pageCount: mediaData.pageCount || null,
