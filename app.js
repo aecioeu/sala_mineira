@@ -57,6 +57,7 @@ const processUpsert = async (webhookData) => {
 
       try {
         let base64 = await getBase64FromMediaMessage({
+          instance,
           message: { key: { id: messageId } },
           convertToMp4: messageType === "audioMessage" || messageType === "videoMessage"
         });

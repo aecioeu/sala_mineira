@@ -10,8 +10,10 @@ const buildApiUrl = (endpoint) => {
   };
   
 export const getBase64FromMediaMessage = async (payload) => {
+
+  console.log("Payload recebido:", payload);
     try {
-      const apiUrl = buildApiUrl("chat/getBase64FromMediaMessage");
+      const apiUrl = buildApiUrl(`chat/getBase64FromMediaMessage/${payload.instance}`);
       const response = await axios.post(apiUrl, payload, axiosConfig);
   
       if (response.data.base64) {
@@ -22,7 +24,7 @@ export const getBase64FromMediaMessage = async (payload) => {
         return null;
       }
     } catch (error) {
-      console.error(`Erro ao buscar a mídia:`, error.response?.data || error.message);
+      console.error(`Erro ao buscar a mídia em ${apiUrl}:`, error.response?.data || error.message);
       return null;
     }
 }; 
