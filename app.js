@@ -1,10 +1,5 @@
 import express from "express";
 import bodyParser from "body-parser";
-
-import qs from "qs"
-import axios from "axios";
-import https from "https";
-import fs from "fs";
 import { emissaoDAS, emissaoDAS_test } from "./utils/serpro.js";
 import { sendMsg } from "./utils/whatsapp.js";
 import { validate } from 'node-cnpj';

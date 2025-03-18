@@ -1,15 +1,15 @@
 
 import "dotenv/config";
 import fs from "fs";
-
-
+import qs from "qs"
+import axios from "axios";
+import https from "https";
 
 const consumerKey = process.env.CONSUMER_KEY;
 const consumerSecret = process.env.COMSUMER_SECRET;
 const certificadoP12 = 'cert/cert.pfx';
 const senhaCertificado = process.env.SENHA_CERTIFICADO;
 const CNPJ_contratante = process.env.CNPJ_CONTRATANTE;
-
 
 function getHttpsAgent() {
   const certificadoP12 = certificadoP12; // Defina o caminho aqui
