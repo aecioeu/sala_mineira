@@ -146,21 +146,29 @@ app.post("/emitir-das", async (req, res) => {
     }
     // 🔹 Gera o DAS
     const infoDAS = await gerarDAS(cnpj, mes, ano);
-    if (!infoDAS) {
-      return res.status(500).json({ status: "error", message: "Falha ao obter o DAS" });
-    }
-    // 🔹 Enviar mensagem com o arquivo para o destinatário
-    const message = await enviarDAS(from, instance, infoDAS);
 
-    if (message?.success) {
-      return res.json({
-        status: "success",
-        message: `DAS do mês ${mes}/${ano} gerado com sucesso.`,
-      });
-    }
-    // 🔹 Se chegou aqui, houve falha no envio da mensagem
-    throw new Error("Falha ao enviar o DAS via mensagem", message);
+    if(infoDAS.status == "success"){
 
+      // 🔹 Enviar mensagem com o arquivo para o destinatário
+      const message = await enviarDAS(from, instance, infoDAS);
+
+      if (message?.success) {
+        return res.json({
+          status: "success",
+          message: `DAS do mês ${mes}/${ano} gerado com sucesso.`,
+        });
+      }
+
+
+    }else if(infoDAS.status == "paid"){
+      //informa que o das da competencia já foi pago.
+      return res.status(200).json(infoDAS);
+    }else{
+      //algum erro desconhecido nao permitiu a geração do DAS.
+      return res.status(200).json({ status: "error", message: "Falha ao obter o DAS" });
+    }
+       
+   
   } catch (error) {
     console.error("Erro ao processar DAS:", error);
     res.status(500).json({ status: "error", message: error.message || "Erro ao processar o DAS, peça para o usuario tentar novamente mais tarde, houve algum problema." });
@@ -173,12 +181,22 @@ async function gerarDAS(cnpj, mes, ano) {
     const response = await emissaoDAS(cnpj, mes, ano);
     const [dadosItem] = JSON.parse(response.dados); // Pega o primeiro item diretamente
 
-    if (!dadosItem || !dadosItem.pdf) {
-      throw new Error("DAS não retornou um PDF válido");
+
+    const isPaid = response.mensagens?.some(msg => msg.codigo === '[Aviso-PGMEI-23018]');
+
+    if (isPaid) {
+      console.log(`⚠️ DAS já foi pago para ${mes}/${ano}. Nenhum DAS será gerado.`);
+      return {
+        status: "paid",
+        message: `O DAS para ${mes}/${ano} já foi pago. Nenhum documento foi gerado.`,
+      };
     }
 
+   /* if (!dadosItem || !dadosItem.pdf) {
+      throw new Error("DAS não retornou um PDF válido");
+    }*/
     const { cnpjCompleto, razaoSocial, pdf: pdfBase64 } = dadosItem;
-    return { cnpjCompleto, razaoSocial, pdfBase64, mes, ano };
+    return {  status: "success", cnpjCompleto, razaoSocial, pdfBase64, mes, ano };
 
   } catch (error) {
     console.error("Erro ao gerar DAS:", error);
