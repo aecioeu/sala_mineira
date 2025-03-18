@@ -62,6 +62,8 @@ const processUpsert = async (webhookData) => {
           convertToMp4: messageType === "audioMessage" || messageType === "videoMessage"
         });
 
+        console.log("BASE64", base64)
+
         const mediaData = message[messageType] || {};
        // console.log("MEDIA DATA", mediaData)
 
