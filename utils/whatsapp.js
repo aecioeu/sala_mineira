@@ -61,6 +61,8 @@ const sender = async (url, payload) => {
    
    // Função para enviar mensagens
   export const sendMsg = async (payload) => {
+
+    console.log("PEYLOAD", payload)
      
      try {
        //console.log("payload do sendMsg", payload);

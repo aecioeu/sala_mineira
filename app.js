@@ -132,20 +132,20 @@ app.get("/", (req, res) => {
 });
 
 
-app.post("/emitir-das", async (req, res) => {
+app.get("/emitir-das", async (req, res) => {
   try {
 
     // 🔹 Extração de parâmetros (poderiam vir do `req.body`)
-    const { cnpj, mes, ano, from, instance } = req.body;
+    //const { cnpj, mes, ano, from, instance } = req.body;
 
-    console.log("🔹 Extração de parâmetros (poderiam vir do `req.body`)", { cnpj, mes, ano, from, instance });
+    //console.log("🔹 Extração de parâmetros (poderiam vir do `req.body`)", { cnpj, mes, ano, from, instance });
 
     // para fins de teste
-        /* const from = "5537988555554",
-            instance = "aecio",
-            cnpj = "02725874000130",
+         const from = "5537988555554",
+            instance = "lagoa_da_prata",
+            cnpj = "02725874000131",
             mes = "01",
-            ano = "2023";*/
+            ano = "2023";
 
     // 🔹 Validação dos parâmetros
     if (!validate(cnpj)) {
@@ -153,13 +153,13 @@ app.post("/emitir-das", async (req, res) => {
     }
     // 🔹 Gera o DAS
     const infoDAS = await gerarDAS(cnpj, mes, ano);
-    console.log("Info do DaS GERADO " , infoDAS)
+   // console.log("Info do DaS GERADO " , infoDAS.pdfBase64)
 
       if(infoDAS.status == "success"){
 
       // 🔹 Enviar mensagem com o arquivo para o destinatário
       const message = await enviarDAS(from, instance, infoDAS);
-      console.log(message)
+     
 
       if (message?.success) {
         return res.json({
@@ -187,7 +187,7 @@ app.post("/emitir-das", async (req, res) => {
 // 🔹 Função para gerar DAS
 async function gerarDAS(cnpj, mes, ano) {
   try {
-    const response = await emissaoDAS(cnpj, mes, ano);
+    const response = await emissaoDAS_test(cnpj, mes, ano);
     const [dadosItem] = JSON.parse(response.dados); // Pega o primeiro item diretamente
 
 
@@ -216,18 +216,22 @@ async function gerarDAS(cnpj, mes, ano) {
 // 🔹 Função para enviar DAS via mensagem
 async function enviarDAS(from, instance, { razaoSocial, mes, ano, pdfBase64 }) {
   try {
-    return await sendMsg({
-      type: "document",
-      from,
-      instance,
-      media: {
-        type: "document",
-        base64: pdfBase64,
-        mimeType: "application/pdf",
-        fileName: `${razaoSocial}-${mes}-${ano}.pdf`,
-        caption: `DAS ${mes}/${ano}`,
-      },
-    });
+
+const data = {
+  type: "document",
+  from,
+  instance,
+  media: {
+    type: "document",
+    base64: pdfBase64,
+    mimeType: "application/pdf",
+    fileName: `${razaoSocial}-${mes}-${ano}.pdf`,
+    caption: `DAS ${mes}/${ano}`,
+  },
+}
+
+
+    return await sendMsg(data);
   } catch (error) {
     console.error("Erro ao enviar mensagem:", error);
     return null;
