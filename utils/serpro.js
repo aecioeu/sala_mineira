@@ -4,6 +4,7 @@ import fs from "fs";
 import qs from "qs"
 import axios from "axios";
 import https from "https";
+import moment from "moment";
 
 const consumerKey = process.env.CONSUMER_KEY;
 const consumerSecret = process.env.COMSUMER_SECRET;
@@ -70,6 +71,8 @@ const headers = {
   'Content-Type': 'application/json',
   'jwt_token': jwtToken
 };
+
+console.log("TOKENS OBTIDOS" ,accessToken, jwtToken)
 
 // 🔹 Formata mês e ano corretamente
 const mesFormatado = moment(mes, "M").format("MM"); // Garante 2 dígitos
