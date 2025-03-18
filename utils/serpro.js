@@ -7,13 +7,12 @@ import https from "https";
 
 const consumerKey = process.env.CONSUMER_KEY;
 const consumerSecret = process.env.COMSUMER_SECRET;
-const certificadoP12 = 'cert/cert.pfx';
-const senhaCertificado = process.env.SENHA_CERTIFICADO;
 const CNPJ_contratante = process.env.CNPJ_CONTRATANTE;
 
+
 function getHttpsAgent() {
-  const certificadoP12 = certificadoP12; // Defina o caminho aqui
-  const senhaCertificado = senhaCertificado; // Defina a senha aqui
+  const certificadoP12 = 'cert/cert.pfx'; // Defina o caminho aqui
+  const senhaCertificado = process.env.SENHA_CERTIFICADO; // Defina a senha aqui
 
   return new https.Agent({
     pfx: fs.readFileSync(certificadoP12),
