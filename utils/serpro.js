@@ -80,15 +80,15 @@ const anoFormatado = moment(ano, "YYYY").format("YYYY"); // Garante 4 dígitos
 
 const data = {
   contratante: {
-    numero: CNPJ_contratante,
+    numero: String(CNPJ_contratante),
     tipo: 2
   },
   autorPedidoDados: {
-    numero: CNPJ_contratante,
+    numero: String(CNPJ_contratante),
     tipo: 2
   },
   contribuinte: {
-    numero: cnpj,
+    numero: String(cnpj),
     tipo: 2
   },
   pedidoDados: {
