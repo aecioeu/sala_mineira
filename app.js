@@ -92,6 +92,7 @@ const processUpsert = async (webhookData) => {
     }
    
     const messageData  = {
+      instance,
       messageType,
       fromMe,
       to,
@@ -138,28 +139,23 @@ app.post("/emitir-das", async (req, res) => {
     console.log("🔹 Extração de parâmetros (poderiam vir do `req.body`)", { cnpj, mes, ano, from, instance });
 
     // para fins de teste
-   /* const from = "5537988555554",
-      instance = "aecio",
-      cnpj = "02725874000130",
-      mes = "01",
-      ano = "2023";*/
-
-
+        /* const from = "5537988555554",
+            instance = "aecio",
+            cnpj = "02725874000130",
+            mes = "01",
+            ano = "2023";*/
 
     // 🔹 Validação dos parâmetros
     if (!validate(cnpj)) {
       return res.status(400).json({ status: "error", message: "CNPJ invalido, peça que insira novamente o CNPJ." });
     }
-
     // 🔹 Gera o DAS
     const infoDAS = await gerarDAS(cnpj, mes, ano);
     if (!infoDAS) {
       return res.status(500).json({ status: "error", message: "Falha ao obter o DAS" });
     }
-
     // 🔹 Enviar mensagem com o arquivo para o destinatário
     const message = await enviarDAS(from, instance, infoDAS);
-
 
     if (message?.success) {
       return res.json({
@@ -167,7 +163,6 @@ app.post("/emitir-das", async (req, res) => {
         message: `DAS do mês ${mes}/${ano} gerado com sucesso.`,
       });
     }
-
     // 🔹 Se chegou aqui, houve falha no envio da mensagem
     throw new Error("Falha ao enviar o DAS via mensagem", message);
 
@@ -180,7 +175,7 @@ app.post("/emitir-das", async (req, res) => {
 // 🔹 Função para gerar DAS
 async function gerarDAS(cnpj, mes, ano) {
   try {
-    const response = await emissaoDAS_test(cnpj, mes, ano);
+    const response = await emissaoDAS(cnpj, mes, ano);
     const [dadosItem] = JSON.parse(response.dados); // Pega o primeiro item diretamente
 
     if (!dadosItem || !dadosItem.pdf) {
@@ -224,5 +219,3 @@ app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
 
-
-//console.log(processUpsert({"event": "messages.upsert", "instance": "aecio", "data": {"key": {"remoteJid": "553799564996@s.whatsapp.net", "fromMe": true, "id": "3EB02313173A5079614EAA"}, "pushName": "Aecio Oliveira", "status": "SERVER_ACK", "message": {"conversation": "opa tudo bem ?"}, "contextInfo": {"expiration": 604800, "ephemeralSettingTimestamp": "1730203049", "disappearingMode": {"initiator": "CHANGED_IN_CHAT", "trigger": "ACCOUNT_SETTING", "initiatedByMe": true}}, "messageType": "conversation", "messageTimestamp": 1741001371, "instanceId": "22098a5e-e694-4772-a679-aa99746440d7", "source": "web"}, "destination": "https://automation.pmlp.com.br/webhook-test/cf6b0b8d-017a-47f1-95da-9a28480bc715", "date_time": "2025-03-03T08:29:31.505Z", "sender": "553788555554@s.whatsapp.net", "server_url": "https://evolution.pmlp.com.br", "apikey": "BCD3009F38AE-491E-AD1B-D44AAB51C922"}));

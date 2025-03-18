@@ -2,6 +2,8 @@
 import "dotenv/config";
 import fs from "fs";
 
+
+
 const consumerKey = process.env.CONSUMER_KEY;
 const consumerSecret = process.env.COMSUMER_SECRET;
 const certificadoP12 = 'cert/cert.pfx';
@@ -61,7 +63,7 @@ async function obterTokens() {
 
 })*/
 
-export async function emissaoDAS(cnpj) {
+export async function emissaoDAS(cnpj, mes, ano) {
 const { accessToken, jwtToken } = await obterTokens();
 const url = 'https://gateway.apiserpro.serpro.gov.br/integra-contador/v1/Emitir';
 const headers = {
@@ -69,6 +71,10 @@ const headers = {
   'Content-Type': 'application/json',
   'jwt_token': jwtToken
 };
+
+// 🔹 Formata mês e ano corretamente
+const mesFormatado = moment(mes, "M").format("MM"); // Garante 2 dígitos
+const anoFormatado = moment(ano, "YYYY").format("YYYY"); // Garante 4 dígitos
 
 const data = {
   contratante: {
@@ -87,10 +93,11 @@ const data = {
     idSistema: 'PGMEI',
     idServico: 'GERARDASPDF21',
     versaoSistema: '1.0',
-    dados: JSON.stringify({ periodoApuracao: "202503" })
+    dados: JSON.stringify({ periodoApuracao: `${anoFormatado}${mesFormatado}` })
   }
 };
 
+  console.log("Data formatada", data)
   const httpsAgent = getHttpsAgent();
 
 try {
@@ -110,7 +117,7 @@ try {
 
 
 
-
+/*
 
     // Parâmetros de teste
     const cnpjTeste = '22222445000159'; // Substitua por um CNPJ válido para teste
@@ -127,7 +134,7 @@ try {
         console.error('Erro ao consultar o extrato do DAS:', erro.message);
       }
     }
-
+*/
     // Execute o teste
    // testarConsultarExtratoDAS();
 
