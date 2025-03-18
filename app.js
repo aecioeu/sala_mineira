@@ -138,7 +138,7 @@ app.post("/emitir-das", async (req, res) => {
     // 🔹 Extração de parâmetros (poderiam vir do `req.body`)
     const { cnpj, mes, ano, from, instance } = req.body;
 
-    console.log(cnpj, mes, ano, from, instance)
+    //console.log(cnpj, mes, ano, from, instance)
 
     //console.log("🔹 Extração de parâmetros (poderiam vir do `req.body`)", { cnpj, mes, ano, from, instance });
 
@@ -190,7 +190,7 @@ app.post("/emitir-das", async (req, res) => {
 // 🔹 Função para gerar DAS
 async function gerarDAS(cnpj, mes, ano) {
   try {
-    const response = await emissaoDAS_test(cnpj, mes, ano);
+    const response = await emissaoDAS(cnpj, mes, ano);
     const [dadosItem] = JSON.parse(response.dados); // Pega o primeiro item diretamente
 
     const isPaid = response.mensagens?.some(msg => msg.codigo === '[Aviso-PGMEI-23018]');
@@ -232,7 +232,7 @@ const data = {
   },
 }
 
-console.log("data", data)
+
 
 
     return await sendMsg(data);
