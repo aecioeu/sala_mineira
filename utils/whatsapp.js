@@ -100,7 +100,7 @@ const sender = async (url, payload) => {
            return { success: false, error: "Tipo de mensagem não suportado" };
        }
    
-       console.log(payload.media.base64);
+  
    
      /*  if (messageData.success) {
          const {
