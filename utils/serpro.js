@@ -11,7 +11,7 @@ const CNPJ_contratante = process.env.CNPJ_CONTRATANTE;
 
 
 function getHttpsAgent() {
-  const certificadoP12 = 'cert/cert.pfx'; // Defina o caminho aqui
+  const certificadoP12 = 'utils/cert/cert.pfx'; // Defina o caminho aqui
   const senhaCertificado = process.env.SENHA_CERTIFICADO; // Defina a senha aqui
 
   return new https.Agent({
