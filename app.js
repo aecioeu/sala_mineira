@@ -132,20 +132,20 @@ app.get("/", (req, res) => {
 });
 
 
-app.get("/emitir-das", async (req, res) => {
+app.post("/emitir-das", async (req, res) => {
   try {
 
     // 🔹 Extração de parâmetros (poderiam vir do `req.body`)
-    //const { cnpj, mes, ano, from, instance } = req.body;
+    const { cnpj, mes, ano, from, instance } = req.body;
 
     //console.log("🔹 Extração de parâmetros (poderiam vir do `req.body`)", { cnpj, mes, ano, from, instance });
 
-    // para fins de teste
+   /* // para fins de teste
          const from = "5537988555554",
             instance = "lagoa_da_prata",
             cnpj = "02725874000131",
             mes = "01",
-            ano = "2023";
+            ano = "2023";*/
 
     // 🔹 Validação dos parâmetros
     if (!validate(cnpj)) {
