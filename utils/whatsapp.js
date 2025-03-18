@@ -92,7 +92,7 @@ const sender = async (url, payload) => {
               delay: 1200,
             });
 
-            console.log("messageData", messageData)
+            //console.log("messageData", messageData)
            break;
    
          default:

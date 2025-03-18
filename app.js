@@ -138,6 +138,8 @@ app.post("/emitir-das", async (req, res) => {
     // 🔹 Extração de parâmetros (poderiam vir do `req.body`)
     const { cnpj, mes, ano, from, instance } = req.body;
 
+    console.log(cnpj, mes, ano, from, instance)
+
     //console.log("🔹 Extração de parâmetros (poderiam vir do `req.body`)", { cnpj, mes, ano, from, instance });
 
    /* // para fins de teste
@@ -159,7 +161,7 @@ app.post("/emitir-das", async (req, res) => {
 
       // 🔹 Enviar mensagem com o arquivo para o destinatário
       const message = await enviarDAS(from, instance, infoDAS);
-      console.log("RETORNO DO ENVIAR DAS", message);
+     
      
 
       if (message?.success) {
@@ -229,6 +231,8 @@ const data = {
     caption: `DAS ${mes}/${ano}`,
   },
 }
+
+console.log("data", data)
 
 
     return await sendMsg(data);
