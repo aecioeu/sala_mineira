@@ -94,6 +94,7 @@ const processUpsert = async (webhookData) => {
     }
    
     const messageData  = {
+      event,
       instance,
       messageType,
       fromMe,
